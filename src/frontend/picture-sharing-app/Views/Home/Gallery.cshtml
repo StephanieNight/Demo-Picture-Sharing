@@ -1,0 +1,8 @@
+﻿@model List<Uri>
+
+<div class="gallery">
+    @foreach (var imageUrl in Model)
+    {
+        <img src="@imageUrl" alt="Gallery Image" width="250" />
+    }
+</div>

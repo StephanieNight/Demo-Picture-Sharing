@@ -6,13 +6,10 @@ using System;
 [assembly: FunctionsStartup(typeof(FileHandler.Startup))]
 namespace FileHandler
 {
-
     public class Startup : FunctionsStartup
     {
         public override void Configure(IFunctionsHostBuilder builder)
         {
-
-
             var services = builder.Services;
 
             var keyvault = Environment.GetEnvironmentVariable("KeyVault");

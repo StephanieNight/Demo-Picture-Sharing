@@ -4,10 +4,48 @@
 
 <div class="text-center">
     <h1 class="display-4">Velkommen</h1>
-    <img src="images/picture.jpg" style ="width: 30%;">    
-    <p>Til mit foltogalli på denne specielle dag. her kan du uploade de billeder du har taget i løbet af dagen og downloade dem andre har oploaded fra galleriet</p>
-    <form action="http://localhost:7071/api/UploadFile" method="post" enctype="multipart/form-data">
-        <input type="file" name="files" multiple>
-        <button type="submit">Upload</button>
+    <img src="./images/picture.jpg" style ="width: 30%;">    
+    <p>Her kan du uploade de billeder du har taget i løbet af dagen og downloade dem andre har uploaded fra galleriet</p>
+
+     <form method="post" enctype="multipart/form-data" asp-controller="Home" asp-action="UploadFile">
+        <label class="btn btn-primary" for="files">Vælg filer</label>
+        <input id="files" type="file" name="files" multiple style="display:none">
+        <div id="file-names" style="margin-top: 10px;">Ingen filer er valgt</div>
+        <button class="btn btn-success" type="submit">Upload</button>
     </form>
+    <script>
+        // Get the file input element
+        const fileInput = document.querySelector('input[type="file"]');
+
+        // Get the submit button
+        const submitButton = document.querySelector('button[type="submit"]');
+
+        // Get the file names div
+        const fileNamesDiv = document.getElementById('file-names');
+
+        // Add an event listener to the file input for when files are selected
+        fileInput.addEventListener('change', function () {           
+            
+            // Clear the previous file names
+            fileNamesDiv.innerHTML = '';
+
+            // Check if any files are selected
+            if (fileInput.files.length === 0) {
+                // If no files are selected, display "No files selected"
+                const noFilesDiv = document.createElement('div');
+                noFilesDiv.textContent = 'Ingen filer er valgt';
+                fileNamesDiv.appendChild(noFilesDiv);
+            } else {
+                // Loop through each selected file
+                for (const file of fileInput.files) {
+                    // Create a new div element to display the file name
+                    const fileNameDiv = document.createElement('div');
+                    fileNameDiv.textContent = file.name;
+
+                    // Append the file name div to the file names div
+                    fileNamesDiv.appendChild(fileNameDiv);
+                }
+            }
+        });
+    </script> 
 </div>

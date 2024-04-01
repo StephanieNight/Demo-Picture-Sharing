@@ -9,16 +9,16 @@ using System.Threading.Tasks;
 
 namespace FileUpload.Functions
 {
-    public class UploadFileFunction
+    public class UploadFilesFunction
     {
         private StorageService _storageService;
         private string _container;
-        public UploadFileFunction(StorageService storageService)
+        public UploadFilesFunction(StorageService storageService)
         {
             _storageService = storageService ?? throw new ArgumentNullException(nameof(storageService));
             _container = Environment.GetEnvironmentVariable("StorageContainer");
         }
-        [FunctionName("UploadFile")]
+        [FunctionName("UploadFiles")]
         public async Task<IActionResult> Run(
             [HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = null)] HttpRequest req,
             ILogger log)

@@ -1,8 +1,102 @@
 ﻿@model List<Uri>
 
 <div class="gallery">
-    @foreach (var imageUrl in Model)
-    {
-        <img src="@imageUrl" alt="Gallery Image" width="250" />
-    }
+    <form id ="downloadForm" method="post">
+        <div id="imageContainer">
+            <!-- This is where the images will be dynamically added -->
+            @foreach (var url in Model)
+            {
+                <div>
+                    <img src="@url" alt="Image" width="200"/>
+                    <input type="checkbox" name="selectedImages" value="@url" class="imageCheckbox" />
+                    <button class="downloadButton" onclick="downloadFile('@url')">Download</button>
+                </div>
+            }
+
+        </div>
+        <button type="submit" class="btn btn-primary" onclick="downloadSelectedImages()">Download Selected Images</button>
+    </form>
+
 </div>
+<script>
+    function downloadFile(url) {
+        // Create a hidden anchor element
+        // var anchor = document.createElement('a');
+        // anchor.style.display = 'none';
+        // document.body.appendChild(anchor);
+
+        // // Set the href attribute of the anchor to the file URL
+        // anchor.href = url;
+
+        // // Set the download attribute to specify the suggested file name
+        // anchor.download = 'downloaded_image.jpg';
+
+        // // Simulate a click event on the anchor element to trigger the download
+        // anchor.click();
+
+        // // Remove the anchor from the DOM
+        // document.body.removeChild(anchor);
+        const urlchunks = url.split("?");
+        let filepath = urlchunks[0];
+        console.log(filepath)
+        const filepathchunks = filepath.split("/");
+        
+        let filename = filepathchunks[filepathchunks.length-1]
+
+        console.log(filename)
+
+        var link = document.createElement("a");
+        link.download = filename;
+        link.href = url;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        delete link;
+    }
+    function downloadSelectedImages() {
+
+        var checkboxes = document.querySelectorAll('.imageCheckbox:checked');
+        if (checkboxes.length === 0) {
+            alert('Please select at least one image to download.');
+            return;
+        }
+
+        var temporaryDownloadLink = document.createElement("a");
+        temporaryDownloadLink.style.display = 'none';
+
+        document.body.appendChild(temporaryDownloadLink);
+
+        for (var n = 0; n < checkboxes.length; n++) {
+            var url = checkboxes[n].value;
+
+            console.log(url)
+
+            const urlchunks = url.split("?");
+            let filepath = urlchunks[0];
+            console.log(filepath)
+            const filepathchunks = filepath.split("/");
+
+            let filename = filepathchunks[filepathchunks.length - 1]
+
+            temporaryDownloadLink.setAttribute('href', url);
+            temporaryDownloadLink.setAttribute('download', filename);
+
+            temporaryDownloadLink.click();
+        }
+
+        document.body.removeChild(temporaryDownloadLink);
+
+        // Get all selected checkboxes
+        // var checkboxes = document.querySelectorAll('.imageCheckbox:checked');
+        // if (checkboxes.length === 0) {
+        //     alert('Please select at least one image to download.');
+        //     return;
+        // }
+        // // Create a hidden anchor element for each selected image and trigger the download
+        // checkboxes.forEach(function (checkbox) {
+        //     var url = checkbox.value;
+        //     console.log(url)
+        //     downloadFile(url)
+        // });
+    }
+</script>

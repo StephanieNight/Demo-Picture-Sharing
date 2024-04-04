@@ -39,7 +39,7 @@ namespace picture_sharing.Controllers
             return View();
         }
         [HttpPost]
-        public async Task<IActionResult> UploadFile(List<IFormFile> files)
+        public async Task<IActionResult> UploadFiles(List<IFormFile> files)
         {
 
             if(files.Count == 0) { return Index(); }
@@ -79,6 +79,25 @@ namespace picture_sharing.Controllers
                 Console.WriteLine($"Error uploading files: {ex.Message}");
                 return StatusCode(500, "Internal Server Error");
             }
+        }
+
+        public async Task<IActionResult> DownloadFiles(Uri[] selectedImages)
+        {
+            if (selectedImages != null)
+            {
+                foreach (var imageUrl in selectedImages)
+                {
+                    // You can implement the download logic here
+                    System.Console.WriteLine("Downloading: " + imageUrl);
+                    // You may want to use download manager libraries or WebClient to actually download images.
+                }
+            }
+            return Index();
+        }
+        public async Task<IActionResult> DownloadFile(Uri selectedImage)
+        {
+            return Index();
+           // return File();
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]

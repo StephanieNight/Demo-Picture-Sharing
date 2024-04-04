@@ -7,7 +7,7 @@
     <img src="./images/picture.jpg" style ="width: 30%;">    
     <p>Her kan du uploade de billeder du har taget i løbet af dagen og downloade dem andre har uploaded fra galleriet</p>
 
-     <form method="post" enctype="multipart/form-data" asp-controller="Home" asp-action="UploadFile">
+    <form method="post" enctype="multipart/form-data" asp-controller="Home" asp-action="UploadFiles">
         <label class="btn btn-primary" for="files">Vælg filer</label>
         <input id="files" type="file" name="files" multiple style="display:none">
         <div id="file-names" style="margin-top: 10px;">Ingen filer er valgt</div>

@@ -1,7 +1,10 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using picture_sharing.Models;
+using System;
 using System.Diagnostics;
+using System.IO.Compression;
+using System.Net;
 using System.Net.Http.Headers;
 
 namespace picture_sharing.Controllers
@@ -25,10 +28,22 @@ namespace picture_sharing.Controllers
         public IActionResult Privacy()
         {
 
-            return View();           
+            return View();
         }
         public async Task<IActionResult> Gallery()
         {
+            bool isMobileDevice = HttpContext.Request.Headers["User-Agent"].ToString().Contains("Mobi", StringComparison.OrdinalIgnoreCase);
+
+            if (isMobileDevice)
+            {
+                // Execute code for mobile devices
+                ViewBag.IsMobileDevice = true;
+            }
+            else
+            {
+                // Execute code for non-mobile devices
+                ViewBag.IsMobileDevice = false;
+            }
             var url = _configuration.GetSection("BackendURL").Value;
             var response = await _httpClient.GetAsync($"{url}/Gallery");
             if (response.IsSuccessStatusCode)
@@ -39,10 +54,9 @@ namespace picture_sharing.Controllers
             return View();
         }
         [HttpPost]
-        public async Task<IActionResult> UploadFile(List<IFormFile> files)
+        public async Task<IActionResult> UploadFiles(List<IFormFile> files)
         {
-
-            if(files.Count == 0) { return Index(); }
+            if (files.Count == 0) { return Index(); }
             try
             {
                 // Your file upload logic here
@@ -79,6 +93,27 @@ namespace picture_sharing.Controllers
                 Console.WriteLine($"Error uploading files: {ex.Message}");
                 return StatusCode(500, "Internal Server Error");
             }
+        }
+
+        public async Task<IActionResult> DownloadAllFilesAsZip()
+        {
+            return Index();
+        }
+        public async Task<IActionResult> DownloadFile(Uri url)
+        {
+            var urlchunks = url.ToString().Split("?");
+            var filepath = urlchunks[0];
+            var filepathchunks = filepath.Split("/");
+            var filename = filepathchunks[filepathchunks.Length - 1];
+
+            return File(await DownloadFileAsync(url), "application/octet-stream", filename);
+        }
+
+        private async Task<byte[]> DownloadFileAsync(Uri url)
+        {
+            HttpResponseMessage response = await _httpClient.GetAsync(url);
+            response.EnsureSuccessStatusCode();
+            return await response.Content.ReadAsByteArrayAsync();
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]

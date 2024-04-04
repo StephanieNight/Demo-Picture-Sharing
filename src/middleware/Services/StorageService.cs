@@ -23,7 +23,8 @@ namespace Services
             foreach (var file in files)
             {                
                 using var stream = file.OpenReadStream();
-                var blobClient = containerClient.GetBlobClient(file.FileName);
+                var filename = $"IMG_{DateTime.UtcNow.Ticks}{Path.GetExtension(file.FileName)}";
+                var blobClient = containerClient.GetBlobClient(filename);
                 await blobClient.UploadAsync(stream, true);
             }
         }

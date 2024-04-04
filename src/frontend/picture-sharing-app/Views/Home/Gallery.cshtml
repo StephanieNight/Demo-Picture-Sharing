@@ -1,8 +1,17 @@
 ﻿@model List<Uri>
 
 <div class="gallery">
-    <button id="downloadSelectedButton">Download Selected Images</button>
-    <form id ="downloadForm" method="post">
+@*     @if (ViewBag.IsMobileDevice != null && (bool)ViewBag.IsMobileDevice)
+    {
+        <p>This is a mobile device.</p>
+    }
+    else
+    {
+        <p>This is not a mobile device.</p>
+        <button id="downloadSelectedButton">Download Selected Images</button>
+    } *@
+
+@*     <form id="downloadForm" method="post"> *@
         <div class="row">
             @foreach (var url in Model)
             {
@@ -12,18 +21,39 @@
                             <img src="@url" alt="Image" class="img-fluid" />
                         </div>
                         <div class="card-body">
-                            <input type="checkbox" name="selectedImages" value="@url" class="imageCheckbox" />
-                            <a class="btn btn-primary" href="@Url.Action("DownloadFile", "Home", new { url = @url })">Download</a>
+                            @if (ViewBag.IsMobileDevice != null && (bool)ViewBag.IsMobileDevice)
+                            {
+                                <a class="btn btn-primary" href="@url">Download</a>                              
+                            }
+                            else
+                            {
+                                @* <input type="checkbox" name="selectedImages" value="@url" class="imageCheckbox" /> *@
+                                <a class="btn btn-primary" href="@Url.Action("DownloadFile", "Home", new { url = @url })">Download</a>
+                            }
                         </div>
                     </div>
                 </div>
             }
         </div>
-        <button type="submit" class="btn btn-primary" asp-controller="Home" asp-action="DownloadFiles">Download Selected Images</button>
-    </form>
+@*         <button type="submit" class="btn btn-primary" asp-controller="Home" asp-action="DownloadFiles">Download Selected Images</button>
+    </form> *@
 
 </div>
 <script>
+    // function downloadFile(url) {
+    //     var link = document.createElement("a");
+    //     link.download = '';
+    //     link.href = url;
+    //     document.body.appendChild(link);
+    //     link.click();
+    //     document.body.removeChild(link);
+    //     delete link;
+    // }
+
+
+    // Define a JavaScript variable based on ViewBag.IsMobileDevice
+    var isMobileDevice = @((bool)(ViewBag.IsMobileDevice ?? false)).toString().toLowerCase();
+    console.log(isMobileDevice)
     document.getElementById('downloadSelectedButton').addEventListener('click', function () {
         var selectedUrls = [];
         var checkboxes = document.querySelectorAll('.imageCheckbox:checked');
@@ -37,7 +67,11 @@
                 // Create a hidden anchor element
                 var anchor = document.createElement('a');
                 anchor.style.display = 'none';
-                anchor.href = '/Home/DownloadFile?url=' + encodeURIComponent(url);
+                if (isMobileDevice === "true") {
+                    anchor.href = url
+                } else {
+                    anchor.href = '/Home/DownloadFile?url=' + encodeURIComponent(url);
+                }
                 anchor.download = '';
 
                 // Simulate a click event on the anchor element to trigger the download
@@ -60,8 +94,8 @@
         margin: 10px
     }
 
-    .image-container img {
-        width: 100%; /* Ensure the image fills its container */
-        height: auto; /* Maintain the aspect ratio */
-    }
+        .image-container img {
+            width: 100%; /* Ensure the image fills its container */
+            height: auto; /* Maintain the aspect ratio */
+        }
 </style>

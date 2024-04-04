@@ -1,10 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Configuration;
 using picture_sharing.Models;
-using System;
 using System.Diagnostics;
-using System.IO.Compression;
-using System.Net;
 using System.Net.Http.Headers;
 
 namespace picture_sharing.Controllers

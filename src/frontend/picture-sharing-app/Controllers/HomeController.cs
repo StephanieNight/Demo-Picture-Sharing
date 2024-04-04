@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Configuration;
 using picture_sharing.Models;
 using System.Diagnostics;
 using System.Net.Http.Headers;
@@ -25,7 +24,7 @@ namespace picture_sharing.Controllers
         public IActionResult Privacy()
         {
 
-            return View();           
+            return View();
         }
         public async Task<IActionResult> Gallery()
         {
@@ -41,8 +40,7 @@ namespace picture_sharing.Controllers
         [HttpPost]
         public async Task<IActionResult> UploadFiles(List<IFormFile> files)
         {
-
-            if(files.Count == 0) { return Index(); }
+            if (files.Count == 0) { return Index(); }
             try
             {
                 // Your file upload logic here
@@ -81,23 +79,18 @@ namespace picture_sharing.Controllers
             }
         }
 
-        public async Task<IActionResult> DownloadFiles(Uri[] selectedImages)
+        public async Task<IActionResult> DownloadAllFilesAsZip()
         {
-            if (selectedImages != null)
-            {
-                foreach (var imageUrl in selectedImages)
-                {
-                    // You can implement the download logic here
-                    System.Console.WriteLine("Downloading: " + imageUrl);
-                    // You may want to use download manager libraries or WebClient to actually download images.
-                }
-            }
             return Index();
         }
-        public async Task<IActionResult> DownloadFile(Uri selectedImage)
+        public async Task<IActionResult> DownloadFile(Uri url)
         {
-            return Index();
-           // return File();
+            var urlchunks = url.ToString().Split("?");
+            var filepath = urlchunks[0];
+            var filepathchunks = filepath.Split("/");
+            var filename = filepathchunks[filepathchunks.Length - 1];
+
+            return File(await DownloadFileAsync(url), "application/octet-stream", filename);
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]

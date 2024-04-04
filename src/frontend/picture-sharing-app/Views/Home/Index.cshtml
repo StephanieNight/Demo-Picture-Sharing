@@ -4,16 +4,42 @@
 
 <div class="text-center">
     <h1 class="display-4">Velkommen</h1>
-    <img src="./images/picture.jpg" style ="width: 30%;">    
+    <img src="./images/picture.jpg" style="width: 30%;">
     <p>Her kan du uploade de billeder du har taget i løbet af dagen og downloade dem andre har uploaded fra galleriet</p>
 
-    <form method="post" enctype="multipart/form-data" asp-controller="Home" asp-action="UploadFiles">
+    <form method="post" enctype="multipart/form-data">
         <label class="btn btn-primary" for="files">Vælg filer</label>
         <input id="files" type="file" name="files" multiple style="display:none">
         <div id="file-names" style="margin-top: 10px;">Ingen filer er valgt</div>
-        <button class="btn btn-success" type="submit">Upload</button>
+        <button class="btn btn-success" type="button" onclick="uploadFiles()">Upload</button>
     </form>
     <script>
+        function uploadFiles() {
+            var formData = new FormData();
+            var files = document.getElementById("files").files;
+            if (files.length > 0) {
+
+                for (var i = 0; i < files.length; i++) {
+                    formData.append("files", files[i]);
+                }
+
+                var xhr = new XMLHttpRequest();
+                xhr.open("POST", "/Home/UploadFiles", true);
+                xhr.onload = function () {
+                    if (xhr.status === 200) {
+                        alert("Files uploaded successfully!");
+                        // You can optionally perform some action after successful upload
+                    } else {
+                        alert("Error uploading files. Please try again later.");
+                    }
+                };
+                xhr.send(formData);
+            }
+            else 
+            {
+                alert("Du skal vælge en fil spade.")
+            }
+        }
         // Get the file input element
         const fileInput = document.querySelector('input[type="file"]');
 
@@ -24,8 +50,8 @@
         const fileNamesDiv = document.getElementById('file-names');
 
         // Add an event listener to the file input for when files are selected
-        fileInput.addEventListener('change', function () {           
-            
+        fileInput.addEventListener('change', function () {
+
             // Clear the previous file names
             fileNamesDiv.innerHTML = '';
 
@@ -47,5 +73,5 @@
                 }
             }
         });
-    </script> 
+    </script>
 </div>

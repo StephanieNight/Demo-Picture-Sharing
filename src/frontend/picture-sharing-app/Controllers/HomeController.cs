@@ -56,7 +56,7 @@ namespace picture_sharing.Controllers
         [HttpPost]
         public async Task<IActionResult> UploadFiles(List<IFormFile> files)
         {
-            if (files.Count == 0) { return Index(); }
+            if (files.Count == 0) { return StatusCode(400,"Files not found"); }
             try
             {
                 // Your file upload logic here
@@ -81,7 +81,7 @@ namespace picture_sharing.Controllers
                 // Check if the request was successful
                 if (response.IsSuccessStatusCode)
                 {
-                    return View();
+                    return StatusCode(200);
                 }
                 else
                 {
@@ -95,10 +95,6 @@ namespace picture_sharing.Controllers
             }
         }
 
-        public async Task<IActionResult> DownloadAllFilesAsZip()
-        {
-            return Index();
-        }
         public async Task<IActionResult> DownloadFile(Uri url)
         {
             var urlchunks = url.ToString().Split("?");

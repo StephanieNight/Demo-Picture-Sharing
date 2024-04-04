@@ -8,8 +8,9 @@
     else
     {
         <p>This is not a mobile device.</p>
-        <button id="downloadSelectedButton">Download Selected Images</button>
-    } *@
+         <button id="downloadSelectedButton">Download Selected Images</button> 
+    } 
+    *@
 
 @*     <form id="downloadForm" method="post"> *@
         <div class="row">
@@ -21,15 +22,17 @@
                             <img src="@url" alt="Image" class="img-fluid" />
                         </div>
                         <div class="card-body">
-                            @if (ViewBag.IsMobileDevice != null && (bool)ViewBag.IsMobileDevice)
+@*                             @if (ViewBag.IsMobileDevice != null && (bool)ViewBag.IsMobileDevice)
                             {
                                 <a class="btn btn-primary" href="@url">Download</a>                              
                             }
                             else
-                            {
-                                @* <input type="checkbox" name="selectedImages" value="@url" class="imageCheckbox" /> *@
+                            { 
+                                <input type="checkbox" name="selectedImages" value="@url" class="imageCheckbox" />  
                                 <a class="btn btn-primary" href="@Url.Action("DownloadFile", "Home", new { url = @url })">Download</a>
-                            }
+                            } *@
+
+                            <a class="btn btn-primary" href="@Url.Action("DownloadFile", "Home", new { url = @url })">Download</a>
                         </div>
                     </div>
                 </div>
@@ -39,7 +42,7 @@
     </form> *@
 
 </div>
-<script>
+@* <script> 
     // function downloadFile(url) {
     //     var link = document.createElement("a");
     //     link.download = '';
@@ -85,7 +88,7 @@
         }
     });
 </script>
-
+*@
 <style>
     .image-container {
         max-width: 400px; /* Set the maximum width */

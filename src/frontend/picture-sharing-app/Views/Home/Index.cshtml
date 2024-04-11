@@ -6,7 +6,7 @@
     <h1 class="display-4">Velkommen</h1>
     <img src="./images/picture.jpg" style="width: 30%;">
     <p>Her kan du uploade de billeder du har taget i løbet af dagen og downloade dem andre har uploaded fra galleriet</p>
-
+    <a href="@Url.Action("Gallery", "Home")" class="btn btn-primary">Til Galleriet</a>
     <form method="post" enctype="multipart/form-data">
         <label class="btn btn-primary" for="files">Vælg filer</label>
         <input id="files" type="file" name="files" multiple style="display:none">

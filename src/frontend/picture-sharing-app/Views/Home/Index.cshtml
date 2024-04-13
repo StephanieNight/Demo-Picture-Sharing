@@ -1,4 +1,4 @@
-﻿@{
+@{
     ViewData["Title"] = "Home Page";
 }
 
@@ -16,61 +16,66 @@
     <script>
         function uploadFiles() {
             var formData = new FormData();
-            var files = document.getElementById("files").files;
+                    <div id="selected-files">Ingen filer er valgt</div>
             if (files.length > 0) {
+<script>
+    function uploadFiles() {
+        var formData = new FormData();
+        var files = document.getElementById("files").files;
+        if (files.length > 0) {
 
-                for (var i = 0; i < files.length; i++) {
-                    formData.append("files", files[i]);
+            for (var i = 0; i < files.length; i++) {
+                formData.append("files", files[i]);
+            }
+
+            var xhr = new XMLHttpRequest();
+            xhr.open("POST", "/Home/UploadFiles", true);
+            xhr.onload = function () {
+                if (xhr.status === 200) {
+                    alert("Files uploaded successfully!");
+                    // You can optionally perform some action after successful upload
+                } else {
+                    alert("Error uploading files. Please try again later.");
                 }
-
-                var xhr = new XMLHttpRequest();
-                xhr.open("POST", "/Home/UploadFiles", true);
-                xhr.onload = function () {
-                    if (xhr.status === 200) {
-                        alert("Files uploaded successfully!");
-                        // You can optionally perform some action after successful upload
-                    } else {
-                        alert("Error uploading files. Please try again later.");
-                    }
-                };
-                xhr.send(formData);
-            }
-            else 
-            {
-                alert("Ingen filer valgt.")
-            }
+            };
+            xhr.send(formData);
         }
-        // Get the file input element
+        else {
+            alert("Ingen filer valgt.")
+        }
+    }
+    // Get the file input element
+    const fileInput = document.querySelector('input[type="file"]');
         const fileInput = document.querySelector('input[type="file"]');
 
         // Get the submit button
         const submitButton = document.querySelector('button[type="submit"]');
 
-        // Get the file names div
-        const fileNamesDiv = document.getElementById('file-names');
+    // Get the file names div
+    const fileNamesDiv = document.getElementById('selected-files');
 
-        // Add an event listener to the file input for when files are selected
-        fileInput.addEventListener('change', function () {
+    // Add an event listener to the file input for when files are selected
+    fileInput.addEventListener('change', function () {
 
-            // Clear the previous file names
-            fileNamesDiv.innerHTML = '';
+        // Clear the previous file names
+        fileNamesDiv.innerHTML = '';
 
-            // Check if any files are selected
-            if (fileInput.files.length === 0) {
-                // If no files are selected, display "No files selected"
-                const noFilesDiv = document.createElement('div');
-                noFilesDiv.textContent = 'Ingen filer er valgt';
+        // Check if any files are selected
+        if (fileInput.files.length === 0) {
+            // If no files are selected, display "No files selected"
+            const noFilesDiv = document.createElement('div');
+            noFilesDiv.textContent = 'Ingen filer er valgt';
+            fileNamesDiv.appendChild(noFilesDiv);
+        } else {
+            // if there is files display the count
+            const noFilesDiv = document.createElement('div');
+            noFilesDiv.textContent = '(' + fileInput.files.length + ')';
+            if (fileInput.files.length === 1) {
+                noFilesDiv.textContent += ' file er valgt';
+            }
+            else { 
+                noFilesDiv.textContent += ' filer er valgt';
                 fileNamesDiv.appendChild(noFilesDiv);
-            } else {
-                // Loop through each selected file
-                for (const file of fileInput.files) {
-                    // Create a new div element to display the file name
-                    const fileNameDiv = document.createElement('div');
-                    fileNameDiv.textContent = file.name;
-
-                    // Append the file name div to the file names div
-                    fileNamesDiv.appendChild(fileNameDiv);
-                }
             }
         });
     </script>

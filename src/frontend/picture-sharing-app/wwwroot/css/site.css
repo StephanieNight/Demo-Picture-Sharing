@@ -17,6 +17,9 @@ body {
   margin-bottom: 60px;
 }
 
+.give-me-space{
+    margin: 16px
+}
 
 .image-container {
     max-width: 150px; /* Set the maximum width */

@@ -1,9 +1,12 @@
 @model List<Uri>
 
-<div class="gallery">
-    <div class="text-center give-me-space">
-        <a href="@Url.Action("Index", "Home")" class="btn btn-warning">Til Forsiden</a>
+
+
+<div class="give-me-space sticky-top bg-primary text-center">
+        <h1>Galleri</h1>
+        <a href="@Url.Action("Index", "Home")" class="btn btn-warning give-me-space">Til Forsiden</a>
     </div>
+       
     <div class="row">
         @foreach (var url in Model)
         {
@@ -19,4 +22,3 @@
             </div>
         }
     </div>
-</div>

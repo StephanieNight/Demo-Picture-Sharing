@@ -1,24 +1,21 @@
 @model List<Uri>
 
-
-
-<div class="give-me-space sticky-top bg-primary text-center">
-        <h1>Galleri</h1>
-        <a href="@Url.Action("Index", "Home")" class="btn btn-warning give-me-space">Til Forsiden</a>
-    </div>
-       
-    <div class="row">
-        @foreach (var url in Model)
-        {
-            <div class="col-md-4">
-                <div class="card mb-4">
-                    <div class="image-container">
-                        <img src="@url" alt="Image" class="img-fluid" />
-                    </div>
-                    <div class="card-body">
-                        <a class="btn btn-primary" href="@Url.Action("DownloadFile", "Home", new { url = @url })">Download</a>
-                    </div>
+<div class="bg-white sticky-top text-center">
+    <h1>Galleri</h1>
+    <a href="@Url.Action("Index", "Home")" class="btn btn-warning give-me-space">Til Forsiden</a>
+</div>
+<div class="row">
+    @foreach (var url in Model)
+    {
+        <div class="col-md-4">
+            <div class="card mb-4">
+                <div class="image-container">
+                    <img src="@url" alt="Image" class="img-fluid" />
+                </div>
+                <div class="card-body">
+                    <a class="btn btn-primary" href="@Url.Action("DownloadFile", "Home", new { url = @url })">Download</a>
                 </div>
             </div>
-        }
-    </div>
+        </div>
+    }
+</div>

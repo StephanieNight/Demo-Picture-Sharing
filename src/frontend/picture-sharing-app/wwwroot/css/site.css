@@ -20,6 +20,11 @@ body {
 .give-me-space{
     margin: 16px
 }
+.give-me-all-space {
+    margin-top: 64px;
+    margin-button: 64px;
+}
+
 
 .image-container {
     max-width: 150px; /* Set the maximum width */

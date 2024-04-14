@@ -25,6 +25,16 @@ body {
     margin-button: 64px;
 }
 
+.greeting-card {
+    width: 100%; /* Set the maximum width */
+    margin: 10px;
+}
+
+@media (min-width: 1200px) {
+    .greeting-card {
+        width: 70%; /* Set the maximum width */        
+    }
+}
 
 .image-container {
     max-width: 150px; /* Set the maximum width */

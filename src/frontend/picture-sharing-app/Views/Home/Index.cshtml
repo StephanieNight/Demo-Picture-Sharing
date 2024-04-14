@@ -4,27 +4,25 @@
 
 <div class="d-flex justify-content-center text-center">
     <div class="greeting-card border border-3 border-primary rounded rounded-5">
-        <div class="give-me-all-space">
-            <div class="border-primary">
-                <h1>Velkommen</h1>
-            </div>
+        <div class="d-flex">
             <div>
-                <img src="./images/picture.jpg" style="width: 90%;">
-                <div>
-                    <p>Her kan du uploade de billeder du har taget i løbet af dagen og downloade dem andre har uploaded fra galleriet</p>
-                    <a href="@Url.Action("Gallery", "Home")" class="btn btn-warning">Til Galleriet</a>
+                <h1 class="fs-1 fst-italic fw-bolder" style="margin:32px;">Velkommen</h1>
 
-                    <form method="post" enctype="multipart/form-data">
-                        <div class="d-flex align-items-center justify-content-center">
-                            <label class="btn btn-primary" for="files">Vælg filer</label>
-                            <input id="files" type="file" name="files" multiple style="display:none">
-                            <div class="give-me-space" id="selected-files">Ingen filer er valgt</div>
-                            <button class="btn btn-success" type="button" onclick="uploadFiles()">Upload</button>
-                        </div>
-                    </form>
-                </div>
+                <img src="./images/picture.jpg" style="width: 90%;">
+
+                <p class="give-me-space">Her kan du uploade de billeder du har taget i løbet af dagen, og downloade de billeder andre har taget.</p>
+                <a href="@Url.Action("Gallery", "Home")" class="btn btn-warning">Til Galleriet</a>
+
+                <form method="post" enctype="multipart/form-data">
+                    <div class="d-flex align-items-center justify-content-center">
+                        <label class="btn btn-primary" for="files">Vælg filer</label>
+                        <input id="files" type="file" name="files" multiple style="display:none">
+                        <div class="give-me-space" id="selected-files">Ingen filer er valgt</div>
+                        <button class="btn btn-success" type="button" onclick="uploadFiles()">Upload</button>
+                    </div>
+                </form>
             </div>
-        </div>        
+        </div>
     </div>
 </div>
 

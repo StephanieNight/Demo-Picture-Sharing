@@ -7,10 +7,10 @@
 <div class="row row-cols-xl-6 row-cols-sm-4">
     @foreach (var url in Model)
     {
-        <div class="col" style="margin-bottom:16px">
+        <div class="col d-flex" style="margin-bottom:16px">
             <div class="card">
                 <img src="@url" alt="Image" class="card-img-top" />
-                <div class="card-body d-flex align-items-center justify-content-center">
+                <div class="card-body d-flex align-items-end justify-content-center">
                     <a class="btn btn-primary" href="@Url.Action("DownloadFile", "Home", new { url = @url })">Download</a>
                 </div>
             </div>

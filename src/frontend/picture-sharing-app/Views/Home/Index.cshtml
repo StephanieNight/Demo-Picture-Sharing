@@ -27,6 +27,12 @@
 </div>
 
 <script>
+    // Get the file input element
+    const fileInput = document.querySelector('input[type="file"]');
+
+    // Get the file names div
+    const fileNamesDiv = document.getElementById('selected-files');
+
     function uploadFiles() {
         var formData = new FormData();
         var files = document.getElementById("files").files;
@@ -40,6 +46,9 @@
             xhr.open("POST", "/Home/UploadFiles", true);
             xhr.onload = function () {
                 if (xhr.status === 200) {
+                    // Clear the previous file names
+                    fileNamesDiv.innerHTML = 'Ingen filer er valgt';
+
                     alert("Files uploaded successfully!");
                     // You can optionally perform some action after successful upload
                 } else {
@@ -52,11 +61,6 @@
             alert("Ingen filer valgt.")
         }
     }
-    // Get the file input element
-    const fileInput = document.querySelector('input[type="file"]');
-
-    // Get the file names div
-    const fileNamesDiv = document.getElementById('selected-files');
 
     // Add an event listener to the file input for when files are selected
     fileInput.addEventListener('change', function () {
@@ -67,21 +71,19 @@
         // Check if any files are selected
         if (fileInput.files.length === 0) {
             // If no files are selected, display "No files selected"
-            const noFilesDiv = document.createElement('div');
-            noFilesDiv.textContent = 'Ingen filer er valgt';
-            fileNamesDiv.appendChild(noFilesDiv);
+            const text = 'Ingen filer er valgt';
+            fileNamesDiv.innerHTML = text;
         } else {
             // if there is files display the count
-            const noFilesDiv = document.createElement('div');
-            noFilesDiv.textContent = '(' + fileInput.files.length + ')';
+            var text = '';
+            text = '(' + fileInput.files.length + ')';
             if (fileInput.files.length === 1) {
-                noFilesDiv.textContent += ' file er valgt';
+                text += ' fil er valgt';
             }
             else {
-                noFilesDiv.textContent += ' filer er valgt';
-                fileNamesDiv.appendChild(noFilesDiv);
+                text += ' filer er valgt';                
             }
-            fileNamesDiv.appendChild(noFilesDiv);
+            fileNamesDiv.innerHTML = text;
         }
     });
 </script>

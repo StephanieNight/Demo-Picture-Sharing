@@ -3,6 +3,7 @@
 }
 
 <div class="d-flex justify-content-center text-center">
+
     <div class="greeting-card border border-3 border-primary rounded rounded-5">
         <div class="d-flex">
             <div>
@@ -25,13 +26,41 @@
         </div>
     </div>
 </div>
+<!-- Flexbox container for aligning the toasts -->
+<div aria-live="polite" aria-atomic="true" class="d-flex justify-content-center align-items-center w-100">
 
+        @* Error Toast *@
+        <div id="failedtoast" class="toast align-items-center text-white bg-danger border-0" role="alert" aria-live="assertive" aria-atomic="true">
+            <div class="d-flex">
+                <div class="toast-body">
+                    Fejl I upload.
+                </div>
+                <button type="button" class="btn-close me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+        </div>
+        @* Success Toast *@
+        <div id="successtoast" class="toast align-items-center bg-success border-0" role="alert" aria-live="assertive" aria-atomic="true">
+            <div class="d-flex">
+                <div class="toast-body">
+                    Filer blev uploaded til galleri.
+                    <div class="mt-2 pt-2 border-top">
+                        <a href="@Url.Action("Gallery", "Home")" class="btn btn-warning">Til Galleriet</a>
+                    </div>
+                </div>
+                <button type="button" class="btn-close me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+        </div>
+    </div>
 <script>
     // Get the file input element
     const fileInput = document.querySelector('input[type="file"]');
 
     // Get the file names div
     const fileNamesDiv = document.getElementById('selected-files');
+
+    // Toasts
+    const toastSuccess = document.getElementById('successtoast')
+    const toastFailed = document.getElementById('failedtoast')
 
     function uploadFiles() {
         var formData = new FormData();
@@ -48,18 +77,28 @@
                 if (xhr.status === 200) {
                     // Clear the previous file names
                     fileNamesDiv.innerHTML = 'Ingen filer er valgt';
-
-                    alert("Files uploaded successfully!");
+                    UploadToast();
                     // You can optionally perform some action after successful upload
                 } else {
-                    alert("Error uploading files. Please try again later.");
+                    ErrorToast()
                 }
             };
             xhr.send(formData);
         }
         else {
-            alert("Ingen filer valgt.")
+            ErrorToast()
+            //alert("Ingen filer valgt.")
         }
+    }
+    function ErrorToast() {
+        const toastBootstrap = bootstrap.Toast.getOrCreateInstance(toastFailed)
+        toastBootstrap.show()
+
+    }
+    function UploadToast() {
+        const toastBootstrap = bootstrap.Toast.getOrCreateInstance(toastSuccess)
+        toastBootstrap.show()
+
     }
 
     // Add an event listener to the file input for when files are selected
@@ -81,7 +120,7 @@
                 text += ' fil er valgt';
             }
             else {
-                text += ' filer er valgt';                
+                text += ' filer er valgt';
             }
             fileNamesDiv.innerHTML = text;
         }

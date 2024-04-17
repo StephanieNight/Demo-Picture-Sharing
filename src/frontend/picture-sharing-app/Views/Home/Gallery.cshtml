@@ -1,101 +1,19 @@
-﻿@model List<Uri>
+@model List<Uri>
 
-<div class="gallery">
-@*     @if (ViewBag.IsMobileDevice != null && (bool)ViewBag.IsMobileDevice)
-    {
-        <p>This is a mobile device.</p>
-    }
-    else
-    {
-        <p>This is not a mobile device.</p>
-        <button id="downloadSelectedButton">Download Selected Images</button>
-    } *@
-
-@*     <form id="downloadForm" method="post"> *@
-        <div class="row">
-            @foreach (var url in Model)
-            {
-                <div class="col-md-4">
-                    <div class="card mb-4">
-                        <div class="image-container">
-                            <img src="@url" alt="Image" class="img-fluid" />
-                        </div>
-                        <div class="card-body">
-                            @if (ViewBag.IsMobileDevice != null && (bool)ViewBag.IsMobileDevice)
-                            {
-                                <a class="btn btn-primary" href="@url">Download</a>                              
-                            }
-                            else
-                            {
-                                @* <input type="checkbox" name="selectedImages" value="@url" class="imageCheckbox" /> *@
-                                <a class="btn btn-primary" href="@Url.Action("DownloadFile", "Home", new { url = @url })">Download</a>
-                            }
-                        </div>
-                    </div>
-                </div>
-            }
-        </div>
-@*         <button type="submit" class="btn btn-primary" asp-controller="Home" asp-action="DownloadFiles">Download Selected Images</button>
-    </form> *@
-
+<div class="bg-white sticky-top text-center">
+    <h1>Galleri</h1>
+    <a href="@Url.Action("Index", "Home")" class="btn btn-warning give-me-space">Til Forsiden</a>
 </div>
-<script>
-    // function downloadFile(url) {
-    //     var link = document.createElement("a");
-    //     link.download = '';
-    //     link.href = url;
-    //     document.body.appendChild(link);
-    //     link.click();
-    //     document.body.removeChild(link);
-    //     delete link;
-    // }
-
-
-    // Define a JavaScript variable based on ViewBag.IsMobileDevice
-    var isMobileDevice = @((bool)(ViewBag.IsMobileDevice ?? false)).toString().toLowerCase();
-    console.log(isMobileDevice)
-    document.getElementById('downloadSelectedButton').addEventListener('click', function () {
-        var selectedUrls = [];
-        var checkboxes = document.querySelectorAll('.imageCheckbox:checked');
-        checkboxes.forEach(function (checkbox) {
-            selectedUrls.push(checkbox.value);
-        });
-
-        if (selectedUrls.length > 0) {
-            // Loop over each selected URL and initiate a download request
-            selectedUrls.forEach(function (url) {
-                // Create a hidden anchor element
-                var anchor = document.createElement('a');
-                anchor.style.display = 'none';
-                if (isMobileDevice === "true") {
-                    anchor.href = url
-                } else {
-                    anchor.href = '/Home/DownloadFile?url=' + encodeURIComponent(url);
-                }
-                anchor.download = '';
-
-                // Simulate a click event on the anchor element to trigger the download
-                document.body.appendChild(anchor);
-                anchor.click();
-                document.body.removeChild(anchor);
-            });
-        } else {
-            // No images selected, display an alert or handle as needed
-            alert('No images selected.');
-        }
-    });
-</script>
-
-<style>
-    .image-container {
-        max-width: 400px; /* Set the maximum width */
-        max-height: 400px; /* Set the maximum height */
-        overflow: hidden; /* Hide any overflow content */
-        margin: 10px
+<div class="row row-cols-xl-6 row-cols-sm-4">
+    @foreach (var url in Model)
+    {
+        <div class="col d-flex" style="margin-bottom:16px">
+            <div class="card">
+                <img src="@url" alt="Image" class="card-img-top" />
+                <div class="card-body d-flex align-items-end justify-content-center">
+                    <a class="btn btn-primary" href="@Url.Action("DownloadFile", "Home", new { url = @url })">Download</a>
+                </div>
+            </div>
+        </div>
     }
-
-        .image-container img {
-            width: 100%; /* Ensure the image fills its container */
-            height: auto; /* Maintain the aspect ratio */
-        }
-</style>
+</div>

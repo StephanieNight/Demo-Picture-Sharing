@@ -16,3 +16,41 @@ html {
 body {
   margin-bottom: 60px;
 }
+
+.give-me-space{
+    margin: 16px
+}
+.give-me-all-space {
+    margin-top: 64px;
+    margin-button: 64px;
+}
+
+.greeting-card {
+    width: 100%; /* Set the maximum width */
+    margin: 10px;
+}
+
+@media (min-width: 1200px) {
+    .greeting-card {
+        width: 70%; /* Set the maximum width */        
+    }
+}
+
+.image-container {
+    max-width: 150px; /* Set the maximum width */
+    max-height: 150px; /* Set the maximum height */
+    overflow: hidden; /* Hide any overflow content */
+    margin: 10px
+}
+
+@media (min-width: 1200px) {
+    .image-container {
+        max-width: 400px; /* Set the maximum width */
+        max-height: 400px; /* Set the maximum height */
+    }
+}
+
+.image-container img {
+    width: 100%; /* Ensure the image fills its container */
+    height: auto; /* Maintain the aspect ratio */
+}

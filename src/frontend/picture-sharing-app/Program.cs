@@ -6,6 +6,9 @@ namespace picture_sharing
     {
         public static void Main(string[] args)
         {
+
+            var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
+
             var builder = WebApplication.CreateBuilder(args);
 
             // Add services to the container.
@@ -14,6 +17,19 @@ namespace picture_sharing
             // Replace <YourKeyVaultName> with your Key Vault name
             var keyVaultUri = $"https://kvdevpictureshare.vault.azure.net";
             builder.Services.AddSingleton(new KeyVaultService(keyVaultUri));
+
+            // Allow cors
+            builder.Services.AddCors(options =>
+            {
+                options.AddPolicy(name: MyAllowSpecificOrigins,
+                                  policy =>
+                                  {
+                                      policy.WithOrigins(
+                                          "https://confirmationfileshare.blob.core.windows.net/",
+                                          "http://localhost:7071/",
+                                          "https://localhost:7071/");
+                                  });
+            });
 
             var app = builder.Build();
 
@@ -29,6 +45,8 @@ namespace picture_sharing
             app.UseStaticFiles();
 
             app.UseRouting();
+
+            app.UseCors(MyAllowSpecificOrigins);
 
             app.UseAuthorization();
 

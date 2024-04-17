@@ -22,6 +22,11 @@
                         <button class="btn btn-success" type="button" onclick="uploadFiles()">Upload</button>
                     </div>
                 </form>
+                <div id="spinny">
+                    <div class="spinner-border text-primary" role="status">
+                        <span class="visually-hidden">Loading...</span>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -57,6 +62,9 @@
 
     // Get the file names div
     const fileNamesDiv = document.getElementById('selected-files');
+    // Get the spinny div
+    const spinnyDiv = document.getElementById('spinny');
+    spinnyDiv.innerHTML = '';
 
     // Toasts
     const toastSuccess = document.getElementById('successtoast')
@@ -66,6 +74,8 @@
         var formData = new FormData();
         var files = document.getElementById("files").files;
         if (files.length > 0) {
+
+            spinnyDiv.innerHTML = ' <div class="spinner-border text-primary" role="status">< span class="visually-hidden" > Loading...</span>< /div>';
 
             for (var i = 0; i < files.length; i++) {
                 formData.append("files", files[i]);
@@ -89,6 +99,7 @@
             ErrorToast()
             //alert("Ingen filer valgt.")
         }
+        spinnyDiv.innerHTML = '';
     }
     function ErrorToast() {
         const toastBootstrap = bootstrap.Toast.getOrCreateInstance(toastFailed)

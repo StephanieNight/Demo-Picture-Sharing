@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc;
 using picture_sharing.Models;
 using System.Diagnostics;
 using System.Net.Http.Headers;
@@ -28,18 +28,6 @@ namespace picture_sharing.Controllers
         }
         public async Task<IActionResult> Gallery()
         {
-            bool isMobileDevice = HttpContext.Request.Headers["User-Agent"].ToString().Contains("Mobi", StringComparison.OrdinalIgnoreCase);
-
-            if (isMobileDevice)
-            {
-                // Execute code for mobile devices
-                ViewBag.IsMobileDevice = true;
-            }
-            else
-            {
-                // Execute code for non-mobile devices
-                ViewBag.IsMobileDevice = false;
-            }
             var url = _configuration.GetSection("BackendURL").Value;
             var response = await _httpClient.GetAsync($"{url}/Gallery");
             if (response.IsSuccessStatusCode)

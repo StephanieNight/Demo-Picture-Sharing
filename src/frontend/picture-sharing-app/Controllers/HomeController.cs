@@ -1,7 +1,8 @@
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using picture_sharing.Models;
 using System.Diagnostics;
 using System.Net.Http.Headers;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace picture_sharing.Controllers
 {
@@ -25,6 +26,10 @@ namespace picture_sharing.Controllers
         {
 
             return View();
+        }
+        public async Task<IActionResult> Fullscreen(Uri url)
+        {
+            return View(url);
         }
         public async Task<IActionResult> Gallery()
         {

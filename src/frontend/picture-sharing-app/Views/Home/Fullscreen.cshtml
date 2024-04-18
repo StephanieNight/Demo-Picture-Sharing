@@ -1,0 +1,10 @@
+﻿@model Uri
+
+<div class="text-center w-100">    
+    <a href="@Url.Action("Gallery", "Home")" class="btn btn-warning give-me-space">Til Galleriet</a>
+    <img src="@Model" alt="Image" style="width: 100%;"/>
+    <a class="btn btn-primary give-me-space" href="@Url.Action("DownloadFile", "Home", new { url = @Model })">Download</a>
+</div>
+
+
+

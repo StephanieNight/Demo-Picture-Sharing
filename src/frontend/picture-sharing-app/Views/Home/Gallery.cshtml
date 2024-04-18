@@ -9,7 +9,7 @@
     {
         <div class="col d-flex" style="margin-bottom:16px">
             <div class="card">
-                <img src="@url" alt="Image" class="card-img-top" />
+                <a href="@Url.Action("Fullscreen", "Home", new { url = @url })"><img src="@url" alt="Image" class="card-img-top" /></a>
                 <div class="card-body d-flex align-items-end justify-content-center">
                     <a class="btn btn-primary" href="@Url.Action("DownloadFile", "Home", new { url = @url })">Download</a>
                 </div>

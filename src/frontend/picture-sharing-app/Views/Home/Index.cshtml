@@ -14,7 +14,7 @@
 
                 <p class="give-me-space">Her kan du uploade de billeder du har taget i løbet af dagen, og downloade de billeder andre har taget.</p>
 
-                <form method="post" enctype="multipart/form-data">
+                <form id="uploadform" method="post" enctype="multipart/form-data">
                     <div class="d-flex align-items-center justify-content-center">
                         <label class="btn btn-primary" for="files">Vælg filer</label>
                         <input id="files" type="file" name="files" multiple style="display:none">
@@ -87,6 +87,7 @@
                 if (xhr.status === 200) {
                     // Clear the previous file names
                     fileNamesDiv.innerHTML = 'Ingen filer er valgt';
+                    document.getElementById("uploadform").reset();
                     UploadToast();
                     // You can optionally perform some action after successful upload
                 } else {

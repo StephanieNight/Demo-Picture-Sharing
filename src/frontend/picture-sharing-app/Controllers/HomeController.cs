@@ -33,19 +33,12 @@ namespace picture_sharing.Controllers
         }
         public async Task<IActionResult> Gallery()
         {
-            var url = _configuration.GetSection("BackendURL").Value;
-            var response = await _httpClient.GetAsync($"{url}/Gallery");
-            if (response.IsSuccessStatusCode)
-            {
-                var images = await response.Content.ReadFromJsonAsync<List<Uri>>();
-                return View(images);
-            }
             return View();
         }
         [HttpPost]
         public async Task<IActionResult> UploadFiles(List<IFormFile> files)
         {
-            if (files.Count == 0) { return StatusCode(400,"Files not found"); }
+            if (files.Count == 0) { return StatusCode(400, "Files not found"); }
             try
             {
                 // Your file upload logic here
@@ -99,6 +92,18 @@ namespace picture_sharing.Controllers
             HttpResponseMessage response = await _httpClient.GetAsync(url);
             response.EnsureSuccessStatusCode();
             return await response.Content.ReadAsByteArrayAsync();
+        }
+
+        [HttpGet]
+        public async Task<List<Uri>> GetGalleryUris() 
+        {
+            var url = _configuration.GetSection("BackendURL").Value;
+            var response = await _httpClient.GetAsync($"{url}/Gallery");
+            if (response.IsSuccessStatusCode)
+            {
+                return await response.Content.ReadFromJsonAsync<List<Uri>>();
+            }
+            return new List<Uri>();
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]

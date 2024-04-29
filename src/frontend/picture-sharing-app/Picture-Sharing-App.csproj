@@ -8,15 +8,15 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\middleware\Services\Services.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
     <Folder Include="wwwroot\images\" />
   </ItemGroup>
 
   <ItemGroup>
     <None Include="wwwroot\images\picture.jpg" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\middleware\Services\Services.csproj" />
   </ItemGroup>
 
 </Project>

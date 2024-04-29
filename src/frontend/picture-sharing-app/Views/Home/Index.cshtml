@@ -7,14 +7,15 @@
     <div class="greeting-card border border-3 border-primary rounded rounded-5">
         <div class="d-flex">
             <div>
-                <h1 class="fs-1 fst-italic fw-bolder" style="margin:32px;">Velkommen</h1>
-      
+                <h1 class="fs-1 fst-italic fw-bolder" style="margin:32px;">Velkommen til mit fotogalleri</h1>
+                
                 <a href="@Url.Action("Gallery", "Home")" class="btn btn-warning give-me-space">Til Galleriet</a>
+                
                 <img src="./images/picture.jpg" style="width: 90%;">
 
-                <p class="give-me-space">Her kan du uploade de billeder du har taget i løbet af dagen, og downloade de billeder andre har taget.</p>                
+                <p class="give-me-space">Her kan du uploade de billeder du har taget i løbet af dagen og downloade dem de andre gæster har taget.</p>
 
-                <form method="post" enctype="multipart/form-data">
+                <form id="uploadform" method="post" enctype="multipart/form-data">
                     <div class="d-flex align-items-center justify-content-center">
                         <label class="btn btn-primary" for="files">Vælg filer</label>
                         <input id="files" type="file" name="files" multiple style="display:none">
@@ -22,6 +23,11 @@
                         <button class="btn btn-success" type="button" onclick="uploadFiles()">Upload</button>
                     </div>
                 </form>
+                <div id="spinny">
+                    <div class="spinner-border text-primary" role="status">
+                        <span class="visually-hidden">Loading...</span>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -29,66 +35,81 @@
 <!-- Flexbox container for aligning the toasts -->
 <div aria-live="polite" aria-atomic="true" class="d-flex justify-content-center align-items-center w-100">
 
-        @* Error Toast *@
-        <div id="failedtoast" class="toast align-items-center text-white bg-danger border-0" role="alert" aria-live="assertive" aria-atomic="true">
-            <div class="d-flex">
-                <div class="toast-body">
-                    Fejl I upload.
-                </div>
-                <button type="button" class="btn-close me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+    @* Error Toast *@
+    <div id="failedtoast" class="toast align-items-center text-white bg-danger border-0" role="alert" aria-live="assertive" aria-atomic="true">
+        <div class="d-flex">
+            <div class="toast-body">
+                Fejl I upload.
             </div>
-        </div>
-        @* Success Toast *@
-        <div id="successtoast" class="toast align-items-center bg-success border-0" role="alert" aria-live="assertive" aria-atomic="true">
-            <div class="d-flex">
-                <div class="toast-body">
-                    Filer blev uploaded til galleri.
-                    <div class="mt-2 pt-2 border-top">
-                        <a href="@Url.Action("Gallery", "Home")" class="btn btn-warning">Til Galleriet</a>
-                    </div>
-                </div>
-                <button type="button" class="btn-close me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
-            </div>
+            <button type="button" class="btn-close me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
         </div>
     </div>
+    @* Success Toast *@
+    <div id="successtoast" class="toast align-items-center bg-success border-0" role="alert" aria-live="assertive" aria-atomic="true">
+        <div class="d-flex">
+            <div class="toast-body">
+                Filer blev uploaded til galleri.
+                <div class="mt-2 pt-2 border-top">
+                    <a href="@Url.Action("Gallery", "Home")" class="btn btn-warning">Til Galleriet</a>
+                </div>
+            </div>
+            <button type="button" class="btn-close me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+        </div>
+    </div>
+</div>
 <script>
     // Get the file input element
     const fileInput = document.querySelector('input[type="file"]');
 
     // Get the file names div
     const fileNamesDiv = document.getElementById('selected-files');
+    // Get the spinny div
+    const spinnyDiv = document.getElementById('spinny');
+    spinnyDiv.style.display = "none";
 
     // Toasts
     const toastSuccess = document.getElementById('successtoast')
     const toastFailed = document.getElementById('failedtoast')
 
+    var uploading = false
+
     function uploadFiles() {
-        var formData = new FormData();
-        var files = document.getElementById("files").files;
-        if (files.length > 0) {
+        if (uploading === false){
 
-            for (var i = 0; i < files.length; i++) {
-                formData.append("files", files[i]);
-            }
+            uploading = true
 
-            var xhr = new XMLHttpRequest();
-            xhr.open("POST", "/Home/UploadFiles", true);
-            xhr.onload = function () {
-                if (xhr.status === 200) {
-                    // Clear the previous file names
-                    fileNamesDiv.innerHTML = 'Ingen filer er valgt';
-                    UploadToast();
-                    // You can optionally perform some action after successful upload
-                } else {
-                    ErrorToast()
+            var formData = new FormData();
+            var files = document.getElementById("files").files;
+            if (files.length > 0) {
+                fileNamesDiv.innerHTML = 'Uploader dine filer';
+                spinnyDiv.style.display = "block";
+
+                for (var i = 0; i < files.length; i++) {
+                    formData.append("files", files[i]);
                 }
-            };
-            xhr.send(formData);
+
+                var xhr = new XMLHttpRequest();
+                xhr.open("POST", "/Home/UploadFiles", true);
+                xhr.onload = function () {
+                    if (xhr.status === 200) {
+                        // Clear the previous file names
+                        fileNamesDiv.innerHTML = 'Ingen filer er valgt';
+                        document.getElementById("uploadform").reset();
+                        UploadToast();
+                        // You can optionally perform some action after successful upload
+                    } else {
+                        ErrorToast()
+                    }
+                    spinnyDiv.style.display = "none";
+                    uploading = false
+                };
+                xhr.send(formData);
+            }
+            else {
+                ErrorToast()              
+            }
         }
-        else {
-            ErrorToast()
-            //alert("Ingen filer valgt.")
-        }
+      
     }
     function ErrorToast() {
         const toastBootstrap = bootstrap.Toast.getOrCreateInstance(toastFailed)
@@ -98,7 +119,6 @@
     function UploadToast() {
         const toastBootstrap = bootstrap.Toast.getOrCreateInstance(toastSuccess)
         toastBootstrap.show()
-
     }
 
     // Add an event listener to the file input for when files are selected

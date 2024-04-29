@@ -1,6 +1,7 @@
 ﻿using Azure.Storage.Blobs;
 using Azure.Storage.Blobs.Models;
 using Azure.Storage.Sas;
+using ImageMagick;
 using Microsoft.AspNetCore.Http;
 using picture_sharing.Services;
 
@@ -22,10 +23,37 @@ namespace Services
 
             foreach (var file in files)
             {                
-                using var stream = file.OpenReadStream();
+                var stream = file.OpenReadStream();
                 var filename = $"IMG_{DateTime.UtcNow.Ticks}{Path.GetExtension(file.FileName)}";
+      
+                //Convert HEIC/HEIF to JPEG
+                if (filename.EndsWith(".heic") || filename.EndsWith(".heif"))                
+                {
+                    // Change the extension
+                    filename = Path.GetFileNameWithoutExtension(filename) + ".jpeg";                    
+         
+                    // Create image that is completely purple and 800x600
+                    using (MagickImage image = new MagickImage(stream))
+                    {
+                        // Sets the output format to jpeg
+                        image.Format = MagickFormat.Jpeg;                 
+
+                        // Read the .heic file into a byte array
+                        byte[] imageData = image.ToByteArray();
+
+                        // Now you can convert this byte array to a stream if needed
+                        stream = new MemoryStream(imageData);                       
+                    }                                    
+                }
+                // Create the blob client with the file name of the file to be written.
                 var blobClient = containerClient.GetBlobClient(filename);
+                
+                // Write the image to the blob client                        
                 await blobClient.UploadAsync(stream, true);
+
+                // Remember to clean up your resources.
+                stream.Close();
+                stream.Dispose();
             }
         }
         

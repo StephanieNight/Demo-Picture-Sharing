@@ -74,58 +74,62 @@
 
     var uploading = false
 
-    // Chunk upload
-    var chunkSize = 5; // Maximum number of files per request
-
     function uploadFiles() {
-        if (uploading === false){
+        if (!uploading) {
+            uploading = true;
 
-            uploading = true
-          
             var files = document.getElementById("files").files;
             if (files.length > 0) {
 
-                fileNamesDiv.innerHTML = 'Uploader dine filer';
+                var fileIndex = 0;
+                
                 spinnyDiv.style.display = "block";
-               
-                var totalFiles = files.length;          
 
-                sendFilesInChunks(0, totalFiles);
-            }
-        }      
-    }
+                function sendFile(fileIndex) {
 
-    function sendFilesInChunks(startIndex, totalFiles) {
-        var formData = new FormData();
-        for (var i = startIndex; i < Math.min(startIndex + chunkSize, totalFiles); i++) {
-            formData.append("files", files[i]);
-        }
+                    fileNamesDiv.innerHTML = 'Uploader dine filer ' + '(' +(fileIndex+1)+'/' + files.length + ')';;
 
-        var xhr = new XMLHttpRequest();
-        xhr.open("POST", "/Home/UploadFiles", true);
-        xhr.onload = function () {
-            if (xhr.status === 200) {
-                if (startIndex + chunkSize < totalFiles) {
-                    // Send the next chunk
-                    sendChunk(startIndex + chunkSize, totalFiles);
-                } else {
-                    // All chunks are sent, clear the file names
-                    fileNamesDiv.innerHTML = 'Ingen filer er valgt';
-                    document.getElementById("uploadform").reset();
-                    UploadToast();
+                    if (fileIndex >= files.length) {
+                        // All files have been uploaded
+                        fileNamesDiv.innerHTML = 'Ingen filer er valgt';
+                        document.getElementById("uploadform").reset();
+                        UploadToast();
+                        spinnyDiv.style.display = "none";
+                        uploading = false;
+                        return;
+                    }
+
+                    var formData = new FormData();
+                    formData.append("file", files[fileIndex]);
+
+                    var xhr = new XMLHttpRequest();
+                    xhr.open("POST", "/Home/UploadFiles", true);
+                    xhr.onload = function () {
+                        if (xhr.status === 200) {
+                            // Proceed to the next file
+                            sendFile(fileIndex + 1);
+                        } else {
+                            ErrorToast();
+                            spinnyDiv.style.display = "none";
+                            uploading = false;
+                        }
+                    };
+                    xhr.onerror = function () {
+                        ErrorToast();
+                        spinnyDiv.style.display = "none";
+                        uploading = false;
+                    };
+                    xhr.send(formData);
                 }
+
+                sendFile(fileIndex);
+
             } else {
                 ErrorToast();
-            }
-            if (startIndex + chunkSize >= totalFiles) {
-                // Hide the spinner after the last chunk is sent
-                spinnyDiv.style.display = "none";
                 uploading = false;
             }
-        };
-        xhr.send(formData);
+        }
     }
-
     function ErrorToast() {
         const toastBootstrap = bootstrap.Toast.getOrCreateInstance(toastFailed)
         toastBootstrap.show()

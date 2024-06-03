@@ -35,6 +35,10 @@ namespace picture_sharing.Controllers
         {
             return View();
         }
+        public async Task<IActionResult> DownloadZip()
+        {
+            return View();
+        }
         [HttpPost]
         public async Task<IActionResult> UploadFiles(IFormFile file)
         {
@@ -42,7 +46,7 @@ namespace picture_sharing.Controllers
             if (file == null) { return StatusCode(400, "Files not found"); }
             try
             {
-                // Assuming you want to send the file to this external endpoint
+
                 var url = _configuration.GetSection("BackendURL").Value;
                 // Create a new MultipartFormDataContent
                 var multipartContent = new MultipartFormDataContent();
@@ -79,7 +83,21 @@ namespace picture_sharing.Controllers
 
             return File(await DownloadFileAsync(url), "application/octet-stream", filename);
         }
+        [HttpGet]
+        public async Task<IActionResult> GetZip()
+        {
+            var url = _configuration.GetSection("BackendURL").Value;
 
+            var response = await _httpClient.GetAsync($"{url}/GenerateZip");
+
+            if (response.IsSuccessStatusCode)
+            {
+                var fileStream = await response.Content.ReadAsStreamAsync();
+                return File(fileStream, "application/zip", "blobs.zip");
+            }
+
+            return StatusCode((int)response.StatusCode, response.ReasonPhrase);
+        }
         private async Task<byte[]> DownloadFileAsync(Uri url)
         {
             HttpResponseMessage response = await _httpClient.GetAsync(url);

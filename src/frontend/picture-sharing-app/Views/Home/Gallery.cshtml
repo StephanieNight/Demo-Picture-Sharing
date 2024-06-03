@@ -1,7 +1,23 @@
-<div class="bg-white sticky-top text-center">
-    <h1>Galleri</h1>
-    <a href="@Url.Action("Index", "Home")" class="btn btn-warning give-me-space">Til Forsiden</a>
+<div class="bg-white sticky-top give-me-space">
+    <div class="text-center">
+        <h1>Galleri</h1>
+    </div>
+    <div class="container">
+        <div class="row">
+            <div class="col-sm"></div>
+            <div class="col-sm text-center">
+                <a href="@Url.Action("Index", "Home")" class="btn btn-warning">Til Forsiden</a>
+            </div>
+            <div class="col-sm text-end">
+                <a href="@Url.Action("DownloadZip","Home")" class="btn btn-warning">Download Alle (.zip)</a>
+            </div>
+        </div>
+    </div>
 </div>
+
+
+
+
 <div id="spinny">
     <div class="d-flex justify-content-center text-center">
         <div class="spinner-border text-primary" style="width: 6rem; height: 6rem;" role="status">

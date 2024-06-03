@@ -7,7 +7,7 @@
     <div class="greeting-card border border-3 border-primary rounded rounded-5">
         <div class="d-flex">
             <div>
-                <h1 class="fs-1 fst-italic fw-bolder" style="margin:32px;">Velkommen til mit fotogalleri</h1>
+                <h1 class="fs-1 fst-italic fw-bolder" style="margin:32px;">Clara og Christians bryllup 2024</h1>
                 
                 <a href="@Url.Action("Gallery", "Home")" class="btn btn-warning give-me-space">Til Galleriet</a>
                 
@@ -78,9 +78,12 @@
 
             uploading = true
 
-            var formData = new FormData();
+          
             var files = document.getElementById("files").files;
             if (files.length > 0) {
+
+                var formData = new FormData();
+
                 fileNamesDiv.innerHTML = 'Uploader dine filer';
                 spinnyDiv.style.display = "block";
 

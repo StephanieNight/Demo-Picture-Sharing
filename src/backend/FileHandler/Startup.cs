@@ -15,7 +15,8 @@ namespace FileHandler
             var keyvault = Environment.GetEnvironmentVariable("KeyVault");
 
             // == Services == 
-            var keyVaultUri = $"https://{keyvault}.vault.azure.net";
+            //var keyVaultUri = $"https://{keyvault}.vault.azure.net";
+            var keyVaultUri = $"https://kv-wedding.vault.azure.net/";
             KeyVaultService keyVaultService = new KeyVaultService(keyVaultUri);
             StorageService storage = new StorageService(keyVaultService);
 

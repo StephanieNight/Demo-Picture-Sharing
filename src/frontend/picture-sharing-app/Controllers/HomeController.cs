@@ -46,29 +46,36 @@ namespace picture_sharing.Controllers
                 // Assuming you want to send the file to this external endpoint
                 var url = _configuration.GetSection("BackendURL").Value;
 
-                // Create a new MultipartFormDataContent
-                var multipartContent = new MultipartFormDataContent();
+                var chunkSize = 5;
 
-                // Add each file as content to the multipart content
-                foreach (var file in files)
-                {
-                    var fileContent = new StreamContent(file.OpenReadStream());
-                    fileContent.Headers.ContentType = new MediaTypeHeaderValue(file.ContentType);
-                    multipartContent.Add(fileContent, "files", file.FileName);
-                }
+                var totalFiles = files.Count;
+                var startIndex = 0;
 
-                // Send the request to the external endpoint
-                var response = await _httpClient.PostAsync($"{url}/UploadFiles", multipartContent);
+                while(startIndex < totalFiles)
+                {
+                    // Create a new MultipartFormDataContent
+                    var multipartContent = new MultipartFormDataContent();
 
-                // Check if the request was successful
-                if (response.IsSuccessStatusCode)
-                {
-                    return StatusCode(200);
+                    // Add each file as content to the multipart content
+                    for (var i = startIndex; i < Math.Min(startIndex + chunkSize, totalFiles); i++)
+                    {
+                        var file = files[i];
+                        var fileContent = new StreamContent(file.OpenReadStream());
+                        fileContent.Headers.ContentType = new MediaTypeHeaderValue(file.ContentType);
+                        multipartContent.Add(fileContent, "files", file.FileName);
+                    }
+
+                    // Send the request to the external endpoint
+                    var response = await _httpClient.PostAsync($"{url}/UploadFiles", multipartContent);
+
+                    // Check if the request was successful
+                    if (!response.IsSuccessStatusCode)
+                    {
+                        return StatusCode((int)response.StatusCode, $"Error uploading files to external endpoint");
+                    }
+                    startIndex += chunkSize;
                 }
-                else
-                {
-                    return StatusCode((int)response.StatusCode, "Error uploading files to external endpoint");
-                }
+                return StatusCode(200);
             }
             catch (Exception ex)
             {

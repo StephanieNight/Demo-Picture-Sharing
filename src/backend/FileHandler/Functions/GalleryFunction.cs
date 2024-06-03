@@ -24,9 +24,7 @@ namespace FileUpload.Functions
             [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = null)] HttpRequest req,
             ILogger log)
         {
-            //var keyVaultUri = $"https://kvdevpictureshare.vault.azure.net";
-            //KeyVaultService keyVaultService = new KeyVaultService(keyVaultUri);
-            //StorageService storage = new StorageService(keyVaultService);
+            log.LogInformation($"Getting the gallery");
             var result = await _storageService.GetUrisForAllBlobs(_container); 
         
             return new OkObjectResult(result);

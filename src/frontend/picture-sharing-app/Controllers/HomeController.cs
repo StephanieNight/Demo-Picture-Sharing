@@ -35,39 +35,36 @@ namespace picture_sharing.Controllers
         {
             return View();
         }
-        [HttpPost]
-        public async Task<IActionResult> UploadFiles(List<IFormFile> files)
+        public async Task<IActionResult> DownloadZip()
         {
-            if (files.Count == 0) { return StatusCode(400, "Files not found"); }
+            return View();
+        }
+        [HttpPost]
+        public async Task<IActionResult> UploadFiles(IFormFile file)
+        {
+
+            if (file == null) { return StatusCode(400, "Files not found"); }
             try
             {
-                // Your file upload logic here
 
-                // Assuming you want to send the file to this external endpoint
                 var url = _configuration.GetSection("BackendURL").Value;
-
                 // Create a new MultipartFormDataContent
                 var multipartContent = new MultipartFormDataContent();
-
-                // Add each file as content to the multipart content
-                foreach (var file in files)
-                {
-                    var fileContent = new StreamContent(file.OpenReadStream());
-                    fileContent.Headers.ContentType = new MediaTypeHeaderValue(file.ContentType);
-                    multipartContent.Add(fileContent, "files", file.FileName);
-                }
+                var fileContent = new StreamContent(file.OpenReadStream());
+                fileContent.Headers.ContentType = new MediaTypeHeaderValue(file.ContentType);
+                multipartContent.Add(fileContent, "files", file.FileName);
 
                 // Send the request to the external endpoint
                 var response = await _httpClient.PostAsync($"{url}/UploadFiles", multipartContent);
 
                 // Check if the request was successful
-                if (response.IsSuccessStatusCode)
+                if (!response.IsSuccessStatusCode)
                 {
-                    return StatusCode(200);
+                    return StatusCode((int)response.StatusCode, "Error uploading files to external endpoint");
                 }
                 else
                 {
-                    return StatusCode((int)response.StatusCode, "Error uploading files to external endpoint");
+                    return StatusCode(200);
                 }
             }
             catch (Exception ex)
@@ -86,7 +83,21 @@ namespace picture_sharing.Controllers
 
             return File(await DownloadFileAsync(url), "application/octet-stream", filename);
         }
+        [HttpGet]
+        public async Task<IActionResult> GetZip()
+        {
+            var url = _configuration.GetSection("BackendURL").Value;
 
+            var response = await _httpClient.GetAsync($"{url}/GenerateZip");
+
+            if (response.IsSuccessStatusCode)
+            {
+                var fileStream = await response.Content.ReadAsStreamAsync();
+                return File(fileStream, "application/zip", "blobs.zip");
+            }
+
+            return StatusCode((int)response.StatusCode, response.ReasonPhrase);
+        }
         private async Task<byte[]> DownloadFileAsync(Uri url)
         {
             HttpResponseMessage response = await _httpClient.GetAsync(url);
@@ -95,7 +106,7 @@ namespace picture_sharing.Controllers
         }
 
         [HttpGet]
-        public async Task<List<Uri>> GetGalleryUris() 
+        public async Task<List<Uri>> GetGalleryUris()
         {
             var url = _configuration.GetSection("BackendURL").Value;
             var response = await _httpClient.GetAsync($"{url}/Gallery");

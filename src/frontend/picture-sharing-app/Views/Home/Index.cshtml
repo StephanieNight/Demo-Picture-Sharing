@@ -1,13 +1,12 @@
-﻿@{
+@{
     ViewData["Title"] = "Home Page";
 }
 
-<div class="d-flex justify-content-center text-center">
-
+<div class="d-flex justify-content-center text-center">    
     <div class="greeting-card border border-3 border-primary rounded rounded-5">
         <div class="d-flex">
             <div>
-                <h1 class="fs-1 fst-italic fw-bolder" style="margin:32px;">Velkommen til mit fotogalleri</h1>
+                <h1 class="fs-1 fst-italic fw-bolder" style="margin:32px;">Clara og Christians bryllup 2024</h1>
                 
                 <a href="@Url.Action("Gallery", "Home")" class="btn btn-warning give-me-space">Til Galleriet</a>
                 
@@ -74,42 +73,60 @@
     var uploading = false
 
     function uploadFiles() {
-        if (uploading === false){
+        if (!uploading) {
+            uploading = true;
 
-            uploading = true
-
-            var formData = new FormData();
             var files = document.getElementById("files").files;
             if (files.length > 0) {
-                fileNamesDiv.innerHTML = 'Uploader dine filer';
+
+                var fileIndex = 0;
+                
                 spinnyDiv.style.display = "block";
 
-                for (var i = 0; i < files.length; i++) {
-                    formData.append("files", files[i]);
-                }
+                function sendFile(fileIndex) {
 
-                var xhr = new XMLHttpRequest();
-                xhr.open("POST", "/Home/UploadFiles", true);
-                xhr.onload = function () {
-                    if (xhr.status === 200) {
-                        // Clear the previous file names
+                    fileNamesDiv.innerHTML = 'Uploader dine filer ' + '(' +(fileIndex+1)+'/' + files.length + ')';;
+
+                    if (fileIndex >= files.length) {
+                        // All files have been uploaded
                         fileNamesDiv.innerHTML = 'Ingen filer er valgt';
                         document.getElementById("uploadform").reset();
                         UploadToast();
-                        // You can optionally perform some action after successful upload
-                    } else {
-                        ErrorToast()
+                        spinnyDiv.style.display = "none";
+                        uploading = false;
+                        return;
                     }
-                    spinnyDiv.style.display = "none";
-                    uploading = false
-                };
-                xhr.send(formData);
-            }
-            else {
-                ErrorToast()              
+
+                    var formData = new FormData();
+                    formData.append("file", files[fileIndex]);
+
+                    var xhr = new XMLHttpRequest();
+                    xhr.open("POST", "/Home/UploadFiles", true);
+                    xhr.onload = function () {
+                        if (xhr.status === 200) {
+                            // Proceed to the next file
+                            sendFile(fileIndex + 1);
+                        } else {
+                            ErrorToast();
+                            spinnyDiv.style.display = "none";
+                            uploading = false;
+                        }
+                    };
+                    xhr.onerror = function () {
+                        ErrorToast();
+                        spinnyDiv.style.display = "none";
+                        uploading = false;
+                    };
+                    xhr.send(formData);
+                }
+
+                sendFile(fileIndex);
+
+            } else {
+                ErrorToast();
+                uploading = false;
             }
         }
-      
     }
     function ErrorToast() {
         const toastBootstrap = bootstrap.Toast.getOrCreateInstance(toastFailed)

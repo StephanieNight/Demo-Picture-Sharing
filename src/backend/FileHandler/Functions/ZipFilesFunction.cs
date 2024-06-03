@@ -25,7 +25,7 @@ namespace FileHandler.Functions
         }
         [FunctionName("GenerateZip")]
         public async Task<IActionResult> Run(
-            [HttpTrigger(AuthorizationLevel.Function, "get", Route = null)] HttpRequest req,
+            [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = null)] HttpRequest req,
             ILogger log)
         {
             log.LogInformation("Generating Zip");

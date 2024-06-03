@@ -4,6 +4,7 @@ using Azure.Storage.Sas;
 using ImageMagick;
 using Microsoft.AspNetCore.Http;
 using picture_sharing.Services;
+using System.IO.Compression;
 
 namespace Services
 {
@@ -56,7 +57,32 @@ namespace Services
                 stream.Dispose();
             }
         }
-        
+        public async Task<FileStream> ZipAllFiles(string containerName)
+        {
+            string zipFilePath = Path.GetTempFileName();
+            zipFilePath = Path.ChangeExtension(zipFilePath, ".zip");
+
+            BlobServiceClient blobServiceClient = new BlobServiceClient(_connectionString);
+            BlobContainerClient containerClient = blobServiceClient.GetBlobContainerClient(containerName);
+
+            using (FileStream zipToOpen = new FileStream(zipFilePath, FileMode.Create))
+            using (ZipArchive archive = new ZipArchive(zipToOpen, ZipArchiveMode.Update))
+            {
+                await foreach (BlobItem blobItem in containerClient.GetBlobsAsync())
+                {
+                    BlobClient blobClient = containerClient.GetBlobClient(blobItem.Name);
+
+                    ZipArchiveEntry readmeEntry = archive.CreateEntry(blobItem.Name);
+
+                    using (Stream blobStream = await blobClient.OpenReadAsync())
+                    using (Stream entryStream = readmeEntry.Open())
+                    {
+                        await blobStream.CopyToAsync(entryStream);
+                    }
+                }
+            }
+            return new FileStream(zipFilePath, FileMode.Open);
+        }
         public async Task<List<Uri>> GetUrisForAllBlobs(string containerName) {
 
             List<Uri> result = new List<Uri>();
